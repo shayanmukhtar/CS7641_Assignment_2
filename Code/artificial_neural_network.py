@@ -7,6 +7,8 @@ from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from sklearn.metrics import accuracy_score
 import evaluate_model_learning_complexity
 from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import plot_confusion_matrix, f1_score
+import matplotlib.pyplot as plt
 
 
 def main():
@@ -41,20 +43,16 @@ def ann_weights_genetic_alg():
 
     onehot = OneHotEncoder()
 
-    y_train_hot = onehot.fit_transform(y_train.reshape(-1, 1)).todense()
-    y_test_hot = onehot.fit_transform(y_test.reshape(-1, 1)).todense()
-
     parameters = [
         {'algorithm': ['genetic_alg'], 'hidden_nodes': [[32, 32]],
-         'max_iters': [100, 500, 1000],
-         'learning_rate': [0.5, 0.1, 0.01],
-         'pop_size': [50, 100, 200],
-         'mutation_prob': [0.1, 0.3]}
+         'max_iters': [200],
+         'pop_size': [50, 100], 'random_state':[85],
+         'mutation_prob': [0.1, 0.3], 'learning_rate': [0.00001]}
     ]
 
     grid_searcher = GridSearchCV(mlrose_hiive.NeuralNetwork(), parameters)
 
-    grid_searcher.fit(x_train_scaled, y_train_hot)
+    grid_searcher.fit(x_train_scaled, y_train)
 
     # form a 2d list of your data
     report = [["Parameters", "Mean Fit Time", "Std Dev Fit Time", "Split 0 Score", "Split 1 Score", "Split 2 Score",
@@ -83,8 +81,19 @@ def ann_weights_genetic_alg():
     # plot the learning curve
     title = "Census Data" + " ANN - " + str(grid_searcher.best_params_)
     figure = evaluate_model_learning_complexity.plot_learning_curve(grid_searcher.best_estimator_, title,
-                                                                    x_train, y_train)
+                                                                    x_train_scaled, y_train)
     figure.savefig("ANN_Genetic.png")
+
+    # plot a confusion matrix as well
+    plt.figure()
+    cm = plot_confusion_matrix(grid_searcher.best_estimator_, x_test_scaled, y_test, display_labels=['<=$50K', '>$50K'])
+    cm.plot()
+    plt.savefig("Confusion_Matrix_Genetic.png")
+
+    # append the F1 score to the output file as well
+    f1score = f1_score(y_test, grid_searcher.best_estimator_.predict(x_test_scaled))
+    with open('./ANN_Genetic_Alg.txt', 'a') as fileOut:
+        fileOut.write("F1 Score was: " + str(f1score))
 
 
 def ann_weights_simulate_annealing():
@@ -97,9 +106,6 @@ def ann_weights_simulate_annealing():
 
     onehot = OneHotEncoder()
 
-    y_train_hot = onehot.fit_transform(y_train.reshape(-1, 1)).todense()
-    y_test_hot = onehot.fit_transform(y_test.reshape(-1, 1)).todense()
-
     # for simulated annealing only, define some decay schedules
     annealing_sched_a = mlrose_hiive.GeomDecay(init_temp=1, decay=0.99, min_temp=0.001)
     annealing_sched_b = mlrose_hiive.GeomDecay(init_temp=1, decay=0.99, min_temp=0.1)
@@ -108,13 +114,13 @@ def ann_weights_simulate_annealing():
     parameters = [
         {'algorithm': ['simulated_annealing'], 'hidden_nodes': [[32, 32]],
          'max_iters': [200, 1000],
-         'learning_rate': [0.1, 0.01],
+         'learning_rate': [0.000001], 'random_state':[85],
          'schedule': [annealing_sched_a, annealing_sched_b, annealing_sched_c]}
     ]
 
     grid_searcher = GridSearchCV(mlrose_hiive.NeuralNetwork(), parameters)
 
-    grid_searcher.fit(x_train_scaled, y_train_hot)
+    grid_searcher.fit(x_train_scaled, y_train)
 
     # form a 2d list of your data
     report = [["Parameters", "Mean Fit Time", "Std Dev Fit Time", "Split 0 Score", "Split 1 Score", "Split 2 Score", "Split 3 Score", "Split 4 Score"]]
@@ -142,8 +148,19 @@ def ann_weights_simulate_annealing():
     # plot the learning curve
     title = "Census Data" + " ANN - " + str(grid_searcher.best_params_)
     figure = evaluate_model_learning_complexity.plot_learning_curve(grid_searcher.best_estimator_, title,
-                                                                    x_train, y_train)
+                                                                    x_train_scaled, y_train)
     figure.savefig("ANN_Simulated_Annealing.png")
+
+    # plot a confusion matrix as well
+    plt.figure()
+    cm = plot_confusion_matrix(grid_searcher.best_estimator_, x_test_scaled, y_test, display_labels=['<=$50K', '>$50K'])
+    cm.plot()
+    plt.savefig("Confusion_Matrix_Simulated_Annealing.png")
+
+    # append the F1 score to the output file as well
+    f1score = f1_score(y_test, grid_searcher.best_estimator_.predict(x_test_scaled))
+    with open('./ANN_Simulated_Annealing.txt', 'a') as fileOut:
+        fileOut.write("F1 Score was: " + str(f1score))
 
 
 def ann_weights_randomized_hillclimbing():
@@ -156,19 +173,15 @@ def ann_weights_randomized_hillclimbing():
 
     onehot = OneHotEncoder()
 
-    y_train_hot = onehot.fit_transform(y_train.reshape(-1, 1)).todense()
-    y_test_hot = onehot.fit_transform(y_test.reshape(-1, 1)).todense()
-
     parameters = [
         {'algorithm': ['random_hill_climb'], 'hidden_nodes': [[32, 32]],
-         'max_iters': [200, 1000],
-         'learning_rate': [0.1, 0.01],
-         'restarts': [10, 20]}
+         'max_iters': [200, 500], 'random_state':[85],
+         'restarts': [10, 20], 'learning_rate': [0.000001]}
     ]
 
     grid_searcher = GridSearchCV(mlrose_hiive.NeuralNetwork(), parameters)
 
-    grid_searcher.fit(x_train_scaled, y_train_hot)
+    grid_searcher.fit(x_train_scaled, y_train)
 
     # form a 2d list of your data
     report = [["Parameters", "Mean Fit Time", "Std Dev Fit Time", "Split 0 Score", "Split 1 Score", "Split 2 Score", "Split 3 Score", "Split 4 Score"]]
@@ -196,8 +209,19 @@ def ann_weights_randomized_hillclimbing():
     # plot the learning curve
     title = "Census Data" + " ANN - " + str(grid_searcher.best_params_)
     figure = evaluate_model_learning_complexity.plot_learning_curve(grid_searcher.best_estimator_, title,
-                                                                    x_train, y_train)
+                                                                    x_train_scaled, y_train)
     figure.savefig("ANN_Random_Hillclimbing.png")
+
+    # plot a confusion matrix as well
+    plt.figure()
+    cm = plot_confusion_matrix(grid_searcher.best_estimator_, x_test_scaled, y_test, display_labels=['<=$50K', '>$50K'])
+    cm.plot()
+    plt.savefig("Confusion_Matrix_RHC.png")
+
+    # append the F1 score to the output file as well
+    f1score = f1_score(y_test, grid_searcher.best_estimator_.predict(x_test_scaled))
+    with open('./ANN_Random_Hillclimbing.txt', 'a') as fileOut:
+        fileOut.write("F1 Score was: " + str(f1score))
 
 
 def ann_weights_gradient_descent():
@@ -215,13 +239,13 @@ def ann_weights_gradient_descent():
 
     parameters = [
         {'algorithm': ['gradient_descent'], 'hidden_nodes': [[32, 32]],
-         'max_iters': [200, 1000],
-         'learning_rate': [0.1, 0.01]}
+         'max_iters': [500], 'random_state':[85],
+         'learning_rate': [0.00001]}
     ]
 
     grid_searcher = GridSearchCV(mlrose_hiive.NeuralNetwork(), parameters)
 
-    grid_searcher.fit(x_train_scaled, y_train_hot)
+    grid_searcher.fit(x_train_scaled, y_train)
 
     # form a 2d list of your data
     report = [["Parameters", "Mean Fit Time", "Std Dev Fit Time", "Split 0 Score", "Split 1 Score", "Split 2 Score", "Split 3 Score", "Split 4 Score"]]
@@ -249,17 +273,28 @@ def ann_weights_gradient_descent():
     # plot the learning curve
     title = "Census Data" + " ANN - " + str(grid_searcher.best_params_)
     figure = evaluate_model_learning_complexity.plot_learning_curve(grid_searcher.best_estimator_, title,
-                                                                    x_train, y_train)
+                                                                    x_train_scaled, y_train)
     figure.savefig("ANN_Gradient_Descent.png")
+
+    # plot a confusion matrix as well
+    plt.figure()
+    cm = plot_confusion_matrix(grid_searcher.best_estimator_, x_test_scaled, y_test, display_labels=['<=$50K', '>$50K'])
+    cm.plot()
+    plt.savefig("Confusion_Matrix_Gradient_Descent.png")
+
+    # append the F1 score to the output file as well
+    f1score = f1_score(y_test, grid_searcher.best_estimator_.predict(x_test_scaled))
+    with open('./Gradient_Descent.txt', 'a') as fileOut:
+        fileOut.write("F1 Score was: " + str(f1score))
 
 
 if __name__ == '__main__':
     print("Starting simulated annealing")
     ann_weights_simulate_annealing()
     print("Starting genetic algorithm")
-    ann_weights_genetic_alg()
+    # ann_weights_genetic_alg()
     print("Starting random hillclimbing")
     ann_weights_randomized_hillclimbing()
     print("Starting gradient descent")
-    ann_weights_gradient_descent()
+    # ann_weights_gradient_descent()
     # main()

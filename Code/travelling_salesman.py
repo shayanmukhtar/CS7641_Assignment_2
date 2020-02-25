@@ -135,4 +135,6 @@ def main_5_cities():
 
 
 if __name__ == '__main__':
-    main_5_cities()
+    tsp = create_tsp_problem()
+    plot_tsp_grid(tsp)
+    # main_5_cities()
