@@ -36,6 +36,11 @@ def main():
     plt.title("Distance of all Permutations of a TSP")
     plt.savefig("tsp_all_permutations.png")
 
+    for p in range(len(permutations)):
+        print("Permutation:\t" + str(permutations[p]) + "\tFitness:\t" + str(fitness[p]))
+
+    print(str(np.max(fitness)))
+
 
 if __name__ == '__main__':
     main()
