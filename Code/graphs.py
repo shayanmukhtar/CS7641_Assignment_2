@@ -38,7 +38,9 @@ def generate_graphs(run_stats, run_curves, data_strings):
             label += attribute + ": " + str(curve[attribute].iloc[0]) + ", "
         plt.plot(curve['Time'], curve['Fitness'], label=label)
 
-    # plt.xlim(0, 1)
+    if data_strings['limit_time'] > 0:
+        plt.xlim(0, data_strings['limit_time'])
+
     plt.xlabel("Time (s)")
     plt.ylabel("Population Fitness")
     plt.legend()
@@ -52,7 +54,9 @@ def generate_graphs(run_stats, run_curves, data_strings):
             label += attribute + ": " + str(curve[attribute].iloc[0]) + ", "
         plt.plot(range(len(curve['Fitness'])), curve['Fitness'], label=label)
 
-    # plt.xlim(0, 800)
+    if data_strings['limit_iterations'] > 0:
+        plt.xlim(0, data_strings['limit_iterations'])
+
     plt.xlabel("Algorithm Iterations")
     plt.ylabel("Population Fitness")
     plt.legend()

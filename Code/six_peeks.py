@@ -27,7 +27,9 @@ def main_20_items():
 
     rhc_data_strings = {
         'title': 'RHC - 6 Peaks',
-        'Parameters': ['Restarts']
+        'Parameters': ['Restarts'],
+        'limit_time': 0,
+        'limit_iterations': 0
     }
     graphs.generate_graphs(rhc_run_stats, rhc_run_curves, rhc_data_strings)
 
@@ -36,7 +38,9 @@ def main_20_items():
     mimic_run_stats, mimic_run_curves = mimic.solve_with_mimic(six_peaks, "MIMIC_6P")
     mimic_data_strings = {
         'title': 'MIMIC - 6 Peaks',
-        'Parameters': ['Population Size', 'Keep Percent']
+        'Parameters': ['Population Size', 'Keep Percent'],
+        'limit_time': 10,
+        'limit_iterations': 100
     }
     graphs.generate_graphs(mimic_run_stats, mimic_run_curves, mimic_data_strings)
 
@@ -45,7 +49,9 @@ def main_20_items():
 
     ga_data_strings = {
         'title': 'Genetic Algorithms - 6 Peaks',
-        'Parameters': ['Mutation Rate', 'Population Size']
+        'Parameters': ['Mutation Rate', 'Population Size'],
+        'limit_time': 0.35,
+        'limit_iterations': 100
     }
     graphs.generate_graphs(ga_run_stats, ga_run_curves, ga_data_strings)
 
@@ -54,7 +60,9 @@ def main_20_items():
 
     sa_data_strings = {
         'title': 'Simulated Annealing - 6 Peaks',
-        'Parameters': ['Temperature']
+        'Parameters': ['Temperature'],
+        'limit_time': 0.3,
+        'limit_iterations': 1500
     }
     graphs.generate_graphs(sa_run_stats, sa_run_curves, sa_data_strings)
 

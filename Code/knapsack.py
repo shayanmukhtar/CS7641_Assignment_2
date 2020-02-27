@@ -12,7 +12,7 @@ import graphs
 def create_knapsack_problem(length):
     weights = np.random.randint(1, 20, length)
     values = np.random.randint(1, 5, length)
-    fitness = mlrose_hiive.Knapsack(weights, values)
+    fitness = mlrose_hiive.Knapsack(weights, values, max_weight_pct=1)
     knapsack = mlrose_hiive.opt_probs.discrete_opt.DiscreteOpt(length=len(weights),
                                                                fitness_fn=fitness,
                                                                maximize=True)
@@ -28,7 +28,9 @@ def main_20_items():
 
     rhc_data_strings = {
         'title': 'RHC - Knapsack',
-        'Parameters': ['Restarts']
+        'Parameters': ['Restarts'],
+        'limit_time': 0,
+        'limit_iterations': 0
     }
     graphs.generate_graphs(rhc_run_stats, rhc_run_curves, rhc_data_strings)
 
@@ -37,7 +39,9 @@ def main_20_items():
     mimic_run_stats, mimic_run_curves = mimic.solve_with_mimic(knapsack, "MIMIC_Knapsack")
     mimic_data_strings = {
         'title': 'MIMIC - Knapsack',
-        'Parameters': ['Population Size', 'Keep Percent']
+        'Parameters': ['Population Size', 'Keep Percent'],
+        'limit_time': 10,
+        'limit_iterations': 50
     }
     graphs.generate_graphs(mimic_run_stats, mimic_run_curves, mimic_data_strings)
 
@@ -46,7 +50,9 @@ def main_20_items():
 
     ga_data_strings = {
         'title': 'Genetic Algorithms - Knapsack',
-        'Parameters': ['Mutation Rate', 'Population Size']
+        'Parameters': ['Mutation Rate', 'Population Size'],
+        'limit_time': 11,
+        'limit_iterations': 800
     }
     graphs.generate_graphs(ga_run_stats, ga_run_curves, ga_data_strings)
 
@@ -55,7 +61,9 @@ def main_20_items():
 
     sa_data_strings = {
         'title': 'Simulated Annealing - Knapsack',
-        'Parameters': ['Temperature']
+        'Parameters': ['Temperature'],
+        'limit_time': 0.5,
+        'limit_iterations': 1500
     }
     graphs.generate_graphs(sa_run_stats, sa_run_curves, sa_data_strings)
 
@@ -102,4 +110,4 @@ def main_10_items():
 
 
 if __name__ == '__main__':
-    main_10_items()
+    main_20_items()

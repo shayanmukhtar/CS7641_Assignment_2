@@ -8,6 +8,7 @@ import mimic
 import hillclimbing
 import graphs
 
+
 def create_tsp_problem(length=10, width=10, cities=8):
     coords_list = []
     np.random.seed(786)
@@ -60,7 +61,9 @@ def main_10_cities():
 
     rhc_data_strings = {
         'title': 'RHC - 10 Cities',
-        'Parameters': ['Restarts']
+        'Parameters': ['Restarts'],
+        'limit_time': 0,
+        'limit_iterations': 0
     }
     graphs.generate_graphs(rhc_run_stats, rhc_run_curves, rhc_data_strings)
 
@@ -69,7 +72,9 @@ def main_10_cities():
     mimic_run_stats, mimic_run_curves = mimic.solve_with_mimic(tsp, "MIMIC_TSP")
     mimic_data_strings = {
         'title': 'MIMIC - 10 Cities',
-        'Parameters': ['Population Size', 'Keep Percent']
+        'Parameters': ['Population Size', 'Keep Percent'],
+        'limit_time': 5,
+        'limit_iterations': 100
     }
     graphs.generate_graphs(mimic_run_stats, mimic_run_curves, mimic_data_strings)
 
@@ -78,7 +83,9 @@ def main_10_cities():
 
     ga_data_strings = {
                         'title': 'Genetic Algorithms - 10 Cities',
-                        'Parameters': ['Mutation Rate', 'Population Size']
+                        'Parameters': ['Mutation Rate', 'Population Size'],
+                        'limit_time': 1,
+                        'limit_iterations': 800
                       }
     graphs.generate_graphs(ga_run_stats, ga_run_curves, ga_data_strings)
 
@@ -87,7 +94,9 @@ def main_10_cities():
 
     sa_data_strings = {
                         'title': 'Simulated Annealing - 10 Cities',
-                        'Parameters': ['Temperature']
+                        'Parameters': ['Temperature'],
+                        'limit_time': 0.4,
+                        'limit_iterations': 1000
                       }
     graphs.generate_graphs(sa_run_stats, sa_run_curves, sa_data_strings)
 
@@ -135,6 +144,7 @@ def main_5_cities():
 
 
 if __name__ == '__main__':
-    tsp = create_tsp_problem()
-    plot_tsp_grid(tsp)
+    main_10_cities()
+    # tsp = create_tsp_problem()
+    # plot_tsp_grid(tsp)
     # main_5_cities()
