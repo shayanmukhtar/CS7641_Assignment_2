@@ -15,7 +15,7 @@ def main():
     x_data, y_data = process_dataset.process_census_data()
     x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, train_size=0.6, random_state=86)
 
-    ann = mlrose_hiive.NeuralNetwork(hidden_nodes=[32, 32], activation='relu', algorithm='simulated_annealing',
+    ann = mlrose_hiive.NeuralNetwork(hidden_nodes=[32, 32], activation='relu', algorithm='random_hill_climb',
                                      max_iters=200, bias=True, is_classifier=True, learning_rate=0.5,
                                      max_attempts=200, early_stopping=False)
 
@@ -293,7 +293,7 @@ if __name__ == '__main__':
     print("Starting genetic algorithm")
     # ann_weights_genetic_alg()
     print("Starting random hillclimbing")
-    ann_weights_randomized_hillclimbing()
+    # ann_weights_randomized_hillclimbing()
     print("Starting gradient descent")
     # ann_weights_gradient_descent()
-    # main()
+    main()
