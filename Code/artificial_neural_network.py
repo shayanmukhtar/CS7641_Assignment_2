@@ -15,22 +15,20 @@ def main():
     x_data, y_data = process_dataset.process_census_data()
     x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, train_size=0.6, random_state=86)
 
-    ann = mlrose_hiive.NeuralNetwork(hidden_nodes=[32, 32], activation='relu', algorithm='gradient_descent',
-                                     max_iters=200, bias=True, is_classifier=True, learning_rate=0.001,
+    ann = mlrose_hiive.NeuralNetwork(hidden_nodes=[32, 32], activation='relu', algorithm='simulated_annealing',
+                                     max_iters=200, bias=True, is_classifier=True, learning_rate=0.5,
                                      max_attempts=200, early_stopping=False)
 
-    # ann.fit(x_train, y_train)
+    ann.fit(x_train, y_train)
 
     # check training set predictions
-    # y_train_pred = ann.predict(x_train)
+    y_train_pred = ann.predict(x_train)
 
-    # training_accuracy = accuracy_score(y_train, y_train_pred)
-    # print("Training Accuracy: " + str(training_accuracy))
+    training_accuracy = accuracy_score(y_train, y_train_pred)
+    print("Training Accuracy: " + str(training_accuracy))
 
-
-
-    figure = evaluate_model_learning_complexity.plot_learning_curve(ann, "ANN - Gradient Descent", x_train, y_train)
-    figure.savefig("ANN_Gradient_Descent.png")
+    # figure = evaluate_model_learning_complexity.plot_learning_curve(ann, "ANN - Gradient Descent", x_train, y_train)
+    # figure.savefig("ANN_Gradient_Descent.png")
 
 
 def ann_weights_genetic_alg():
@@ -114,8 +112,8 @@ def ann_weights_simulate_annealing():
     parameters = [
         {'algorithm': ['simulated_annealing'], 'hidden_nodes': [[32, 32]],
          'max_iters': [200, 1000],
-         'learning_rate': [0.000001], 'random_state':[85],
-         'schedule': [annealing_sched_a, annealing_sched_b, annealing_sched_c]}
+         'learning_rate': [0.4, 0.2], 'random_state':[85],
+         'schedule': [annealing_sched_b, annealing_sched_c]}
     ]
 
     grid_searcher = GridSearchCV(mlrose_hiive.NeuralNetwork(), parameters)
@@ -176,7 +174,7 @@ def ann_weights_randomized_hillclimbing():
     parameters = [
         {'algorithm': ['random_hill_climb'], 'hidden_nodes': [[32, 32]],
          'max_iters': [200, 500], 'random_state':[85],
-         'restarts': [10, 20], 'learning_rate': [0.000001]}
+         'restarts': [10], 'learning_rate': [0.3]}
     ]
 
     grid_searcher = GridSearchCV(mlrose_hiive.NeuralNetwork(), parameters)
@@ -289,8 +287,9 @@ def ann_weights_gradient_descent():
 
 
 if __name__ == '__main__':
+    # main()
     print("Starting simulated annealing")
-    ann_weights_simulate_annealing()
+    # ann_weights_simulate_annealing()
     print("Starting genetic algorithm")
     # ann_weights_genetic_alg()
     print("Starting random hillclimbing")
